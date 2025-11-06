@@ -1,0 +1,2143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Pulsy Copilot - Your AI Amazon Ads Partner</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+    min-height:100vh;
+    padding:20px;
+    color:#1f2937;
+}
+.layout{
+    max-width:1800px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 380px;
+    gap:20px;
+}
+
+/* ---- AI rail ---- */
+.ai-rail{
+    position:sticky;
+    top:20px;
+    background:#ffffff;
+    border-radius:20px;
+    box-shadow:0 24px 60px rgba(0,0,0,0.28);
+    border:1px solid rgba(102,126,234,0.4);
+    padding:24px 24px 28px;
+    max-height:calc(100vh - 40px);
+    overflow-y:auto;
+}
+.ai-head-topline{
+    font-size:11px;
+    font-weight:600;
+    color:#6b7280;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-bottom:4px;
+}
+.ai-title-row{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:10px;
+    margin-bottom:4px;
+}
+.ai-title{
+    font-size:18px;
+    font-weight:600;
+    color:#1f2937;
+    line-height:1.3;
+}
+.ai-badge{
+    background:linear-gradient(135deg,#10b981 0%,#059669 100%);
+    color:white;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:600;
+    text-transform:uppercase;
+    line-height:1.2;
+}
+.ai-note{
+    font-size:12px;
+    color:#6b7280;
+    line-height:1.4;
+    margin-bottom:16px;
+}
+
+/* Context bar */
+.context-bar{
+    background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%);
+    border:1px solid #fbbf24;
+    border-radius:10px;
+    padding:10px 14px;
+    margin-bottom:16px;
+    font-size:12px;
+    line-height:1.5;
+}
+.context-bar-header{
+    font-weight:600;
+    color:#92400e;
+    margin-bottom:6px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:11px;
+}
+.context-item{
+    color:#78350f;
+    padding-left:18px;
+    position:relative;
+    margin-bottom:3px;
+    font-size:11px;
+}
+.context-item:last-child{margin-bottom:0;}
+.context-item::before{
+    content:'•';
+    position:absolute;
+    left:6px;
+    font-weight:700;
+}
+
+/* toned-down inline emphasis for AI details */
+.ai-inline-emph{
+    background:#f3f4f6;
+    border:1px solid #e5e7eb;
+    border-radius:6px;
+    padding:2px 6px;
+    font-size:12px;
+    font-weight:500;
+    color:#1f2937;
+    line-height:1.4;
+}
+
+/* AI insight cards */
+.insight-card{
+    background:#f9fafb;
+    border-radius:12px;
+    border:1px solid #e5e7eb;
+    padding:16px;
+    margin-bottom:16px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.04);
+    line-height:1.45;
+    transition:all .25s;
+}
+.insight-card:hover{background:#f3f4f6;transform:translateX(4px);} 
+.insight-header-row{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:8px;
+}
+.insight-left{
+    font-size:12px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    line-height:1.3;
+}
+.insight-type{
+    font-size:11px;
+    font-weight:600;
+    padding:3px 6px;
+    border-radius:6px;
+    line-height:1.2;
+    text-transform:uppercase;
+}
+.type-critical{background:#fee2e2;color:#991b1b;border:1px solid #fecaca;}
+.type-opportunity{background:#ecfdf5;color:#065f46;border:1px solid #6ee7b7;}
+.type-budget{background:#fff7ed;color:#92400e;border:1px solid #fdba74;}
+.type-trend{background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe;}
+.confidence-pill{
+    font-size:10px;
+    color:#6b7280;
+    background:#fff;
+    border:1px solid #d1d5db;
+    border-radius:999px;
+    padding:3px 8px;
+    line-height:1.2;
+    font-weight:500;
+}
+.insight-headline{
+    font-size:14px;
+    font-weight:600;
+    color:#111827;
+    line-height:1.4;
+    margin-bottom:6px;
+}
+.insight-body{
+    font-size:13px;
+    color:#1f2937;
+    line-height:1.5;
+    margin-bottom:10px;
+    font-weight:400;
+}
+.evidence-block{
+    font-size:12px;
+    line-height:1.45;
+    color:#4b5563;
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:8px;
+    padding:10px 12px;
+    margin-bottom:10px;
+}
+.evidence-row{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    margin-bottom:4px;
+    font-size:12px;
+}
+.evidence-label{
+    font-weight:500;
+    color:#6b7280;
+}
+.evidence-value{
+    font-weight:600;
+    color:#111827;
+}
+.evidence-source{
+    font-size:11px;
+    color:#6b7280;
+    line-height:1.4;
+}
+.action-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+.action-primary{
+    background:#667eea;
+    color:#fff;
+    border-radius:6px;
+    font-size:12px;
+    padding:6px 12px;
+    border:0;
+    cursor:pointer;
+    font-weight:500;
+}
+.action-primary:hover{background:#5a67d8;}
+.action-secondary{
+    background:#fff;
+    color:#6b7280;
+    border:1px solid #d1d5db;
+    border-radius:6px;
+    font-size:12px;
+    padding:6px 10px;
+    cursor:pointer;
+    font-weight:500;
+}
+.action-secondary:hover{background:#f9fafb;}
+
+/* Recent Actions log */
+.ai-footer{
+    margin-top:16px;
+    border-top:1px solid #e5e7eb;
+    padding-top:12px;
+}
+.ai-footer-head{
+    font-size:12px;
+    font-weight:600;
+    color:#374151;
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+.ai-log{
+    font-size:12px;
+    color:#4b5563;
+    background:#f9fafb;
+    border-radius:8px;
+    padding:8px 10px;
+    margin-bottom:6px;
+    border:1px solid #e5e7eb;
+    line-height:1.4;
+}
+.ai-log-date{
+    font-weight:600;
+    color:#111827;
+    margin-right:4px;
+}
+
+/* ---- Main column ---- */
+.main-col{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+.card{
+    background:#ffffff;
+    border-radius:20px;
+    box-shadow:0 24px 60px rgba(0,0,0,0.28);
+    border:1px solid #e5e7eb;
+    overflow:hidden;
+}
+
+/* HEADER BAR */
+.header-card{
+    background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+    color:#fff;
+    padding:24px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    row-gap:16px;
+}
+.header-left h1{
+    font-size:20px;
+    font-weight:600;
+    line-height:1.3;
+    margin-bottom:6px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+.sub{
+    font-size:12px;
+    font-weight:400;
+    line-height:1.4;
+    opacity:0.9;
+}
+.header-right{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    align-items:flex-start;
+    color:#fff;
+}
+.block{
+    background:rgba(0,0,0,0.25);
+    border:1px solid rgba(255,255,255,0.25);
+    border-radius:8px;
+    padding:12px;
+    min-width:180px;
+    display:grid;
+    gap:8px;
+}
+.block.wide{min-width:220px;}
+.block-label{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:11px;
+    font-weight:600;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.8);
+}
+.time-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+.select-lite{
+    background:rgba(255,255,255,0.1);
+    color:#fff;
+    border:1px solid rgba(255,255,255,0.3);
+    border-radius:6px;
+    font-size:12px;
+    padding:6px 8px;
+    cursor:pointer;
+}
+.date-range{
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.3);
+    border-radius:6px;
+    padding:6px 8px;
+    font-size:12px;
+    line-height:1.2;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+/* KPI SNAPSHOT */
+.snapshot-card{
+    padding:20px 24px;
+    background:#f8f9fa;
+}
+.section-header-row{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    gap:12px;
+    margin-bottom:16px;
+}
+.section-header-row h2{
+    font-size:16px;
+    font-weight:600;
+    line-height:1.4;
+    color:#1f2937;
+}
+.section-desc{
+    font-size:13px;
+    color:#6b7280;
+}
+.kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:16px;
+    margin-bottom:20px;
+}
+.kpi-card{
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:15px;
+    box-shadow:0 4px 6px rgba(0,0,0,0.07);
+    padding:16px;
+    transition:all .25s;
+}
+.kpi-card:hover{transform:translateY(-3px);box-shadow:0 12px 20px rgba(0,0,0,0.07);} 
+.kpi-topline{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:6px;
+}
+.kpi-label{
+    font-size:11px;
+    color:#6b7280;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    line-height:1.3;
+}
+.kpi-benchmark{
+    font-size:10px;
+    color:#9ca3af;
+    font-weight:500;
+    line-height:1.3;
+}
+.kpi-mainrow{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:8px;
+}
+.kpi-value{
+    font-size:22px;
+    font-weight:600;
+    color:#1f2937;
+    line-height:1.2;
+}
+.kpi-eval{
+    font-size:11px;
+    font-weight:600;
+    padding:4px 8px;
+    border-radius:6px;
+    line-height:1.2;
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+}
+/* Good = 초록 */
+.kpi-eval{
+    background:#ecfdf5;
+    border:1px solid #6ee7b7;
+    color:#065f46;
+}
+/* Normal = 회색 */
+.kpi-eval.normal{
+    background:#f3f4f6;
+    border:1px solid #d1d5db;
+    color:#4b5563;
+}
+/* Bad = 빨강 */
+.kpi-eval.bad{
+    background:#fee2e2;
+    border:1px solid #fecaca;
+    color:#991b1b;
+}
+.kpi-change{
+    font-size:12px;
+    display:flex;
+    gap:4px;
+    color:#6b7280;
+    margin-top:4px;
+}
+.positive{color:#10b981;}
+.negative{color:#ef4444;}
+.neutral{color:#6b7280;}
+
+/* PERFORMANCE LAYERS OVERVIEW */
+.layer-wrapper{
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:15px;
+    box-shadow:0 4px 6px rgba(0,0,0,0.07);
+    padding:20px 24px;
+    margin-top:12px;
+}
+.layer-head{
+    font-size:13px;
+    font-weight:600;
+    color:#374151;
+    margin-bottom:12px;
+}
+.layer-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:12px;
+    font-size:12px;
+    line-height:1.4;
+}
+.layer-col{
+    background:#f9fafb;
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+    padding:12px;
+}
+.layer-title{
+    font-size:12px;
+    font-weight:600;
+    color:#111827;
+    margin-bottom:4px;
+}
+.layer-desc{
+    font-size:12px;
+    color:#6b7280;
+    margin-bottom:8px;
+}
+.layer-metrics-label{
+    font-size:11px;
+    color:#6b7280;
+    font-weight:500;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    margin-bottom:4px;
+}
+.layer-metrics{
+    font-size:13px;
+    font-weight:600;
+    color:#1f2937;
+    line-height:1.4;
+}
+
+/* PERFORMANCE FLOW / FUNNEL DETAIL */
+.fullwidth-section{
+    background:#fff;
+    border-top:1px solid #e5e7eb;
+}
+.block-inner{
+    background:#f8f9fa;
+    padding:24px;
+}
+.funnel-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:16px;
+}
+.funnel-card{
+    background:#fff;
+    border-radius:12px;
+    border:1px solid #e5e7eb;
+    box-shadow:0 8px 20px rgba(0,0,0,0.05);
+    padding:16px 20px;
+    line-height:1.4;
+    position:relative;
+    border-left:4px solid #e5e7eb;
+    transition:all 0.3s ease;
+}
+.funnel-card:hover{
+    box-shadow:0 12px 28px rgba(0,0,0,0.12);
+    transform:translateY(-2px);
+}
+/* Funnel stage colors */
+.funnel-card.stage-awareness{
+    border-left-color:#8b5cf6;
+    background:linear-gradient(to bottom, #faf5ff 0%, #fff 100%);
+}
+.funnel-card.stage-consideration{
+    border-left-color:#3b82f6;
+    background:linear-gradient(to bottom, #eff6ff 0%, #fff 100%);
+}
+.funnel-card.stage-conversion{
+    border-left-color:#10b981;
+    background:linear-gradient(to bottom, #ecfdf5 0%, #fff 100%);
+}
+.funnel-card.stage-efficiency{
+    border-left-color:#f59e0b;
+    background:linear-gradient(to bottom, #fffbeb 0%, #fff 100%);
+}
+.funnel-card.stage-retention{
+    border-left-color:#ec4899;
+    background:linear-gradient(to bottom, #fdf2f8 0%, #fff 100%);
+}
+.funnel-header{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    margin-bottom:10px;
+}
+.funnel-title-row{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    gap:8px;
+}
+.funnel-title-text{
+    font-size:16px;
+    font-weight:600;
+    color:#111827;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+.funnel-stage-number{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    font-size:12px;
+    font-weight:700;
+    color:#fff;
+}
+.stage-awareness .funnel-stage-number{background:#8b5cf6;}
+.stage-consideration .funnel-stage-number{background:#3b82f6;}
+.stage-conversion .funnel-stage-number{background:#10b981;}
+.stage-efficiency .funnel-stage-number{background:#f59e0b;}
+.stage-retention .funnel-stage-number{background:#ec4899;}
+.funnel-sub{
+    font-size:12px;
+    color:#6b7280;
+    max-width:260px;
+    line-height:1.4;
+}
+.metric-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    font-size:14px;
+    color:#1f2937;
+    margin-bottom:10px;
+}
+.metric-left{font-weight:500;color:#1f2937;}
+.metric-right{text-align:right;}
+.metric-value{
+    font-size:14px;
+    font-weight:600;
+    color:#1f2937;
+    line-height:1.3;
+}
+.metric-value.negative{color:#ef4444;}
+.metric-value.positive{color:#10b981;}
+.metric-delta{
+    font-size:12px;
+    color:#6b7280;
+    line-height:1.3;
+}
+.metric-extra{
+    font-size:11px;
+    color:#9ca3af;
+    line-height:1.3;
+}
+
+/* Key metric tag in funnel rows */
+.key-metric-tag {
+  display:inline-block;
+  margin-left:6px;
+  padding:2px 6px;
+  border-radius:6px;
+  background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+  color:#fff;
+  font-size:10px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:.03em;
+}
+.metric-row .metric-left strong {
+  font-weight:700;
+  color:#111827;
+}
+
+/* ANALYTICS SECTION */
+.analytics-wrapper{
+    background:#f8f9fa;
+    padding:24px;
+    border-top:1px solid #e5e7eb;
+}
+.chart-card,.table-card{
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:15px;
+    box-shadow:0 4px 6px rgba(0,0,0,0.07);
+    padding:24px;
+    margin-bottom:20px;
+}
+.flex-between{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:12px;
+}
+.card-title{
+    font-size:16px;
+    font-weight:600;
+    color:#2c3e50;
+}
+.chart-filters{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+.filter-btn{
+    padding:6px 12px;
+    border:1px solid #e5e7eb;
+    background:white;
+    border-radius:8px;
+    font-size:13px;
+    cursor:pointer;
+}
+.filter-btn.active{background:#667eea;color:#fff;border-color:#667eea;}
+.chart-area{
+    height:280px;
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+    padding:20px;
+    position:relative;
+    margin-top:16px;
+}
+.chart-bars-container{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-around;
+    height:200px;
+    width:100%;
+    gap:12px;
+    padding:0 60px;
+    position:relative;
+}
+.roas-line-connector{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+}
+.roas-line-connector svg{
+    width:100%;
+    height:100%;
+}
+.day-group{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    flex:1;
+}
+.bars{
+    position:relative;
+    display:flex;
+    gap:4px;
+    align-items:flex-end;
+}
+.revenue-bar{
+    width:32px;
+    background:linear-gradient(180deg,#667eea 0%,#764ba2 100%);
+    border-radius:4px 4px 0 0;
+    display:flex;
+    flex-direction:column-reverse;
+}
+.revenue-bar.stacked{
+    background:none;
+}
+.channel-segment{
+    width:100%;
+}
+.channel-segment.sp{
+    background:#3b82f6;
+}
+.channel-segment.dsp{
+    background:#10b981;
+}
+.channel-segment.sb{
+    background:#8b5cf6;
+}
+.revenue-bar.stacked .channel-segment:first-child{
+    border-radius:4px 4px 0 0;
+}
+.spend-bar{
+    width:32px;
+    background:linear-gradient(180deg,#f59e0b 0%,#d97706 100%);
+    border-radius:4px 4px 0 0;
+    opacity:0.75;
+}
+.roas-dot{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    width:10px;
+    height:10px;
+    background:#10b981;
+    border:3px solid #fff;
+    border-radius:50%;
+    box-shadow:0 2px 6px rgba(16,185,129,0.4);
+    z-index:20;
+}
+.day-label{
+    font-size:11px;
+    color:#6b7280;
+    text-align:center;
+    line-height:1.3;
+}
+.chart-legend{
+    display:flex;
+    gap:20px;
+    justify-content:center;
+    padding-top:16px;
+    border-top:1px solid #e5e7eb;
+    margin-top:16px;
+}
+.legend-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    color:#6b7280;
+}
+.legend-color{
+    width:20px;
+    height:14px;
+    border-radius:3px;
+}
+.legend-color.revenue{background:linear-gradient(90deg,#667eea 0%,#764ba2 100%);}
+.legend-color.sp{background:#3b82f6;}
+.legend-color.dsp{background:#10b981;}
+.legend-color.sb{background:#8b5cf6;}
+.legend-color.spend{background:linear-gradient(90deg,#f59e0b 0%,#d97706 100%);opacity:0.75;}
+.legend-dot{
+    width:10px;
+    height:10px;
+    background:#10b981;
+    border:2px solid #fff;
+    border-radius:50%;
+    box-shadow:0 1px 3px rgba(0,0,0,0.2);
+}
+
+.table-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:16px;
+}
+.status-dot{
+    width:8px;
+    height:8px;
+    background:#ef4444;
+    border-radius:50%;
+    box-shadow:0 0 0 0 rgba(239,68,68,0.7);
+    animation:pulse 2s infinite;
+}
+@keyframes pulse{
+    70%{box-shadow:0 0 0 10px rgba(239,68,68,0);} 
+    100%{box-shadow:0 0 0 0 rgba(239,68,68,0);} 
+}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{
+    text-align:left;
+    padding:12px;
+    font-size:11px;
+    color:#6b7280;
+    text-transform:uppercase;
+    border-bottom:2px solid #e5e7eb;
+    font-weight:600;
+    letter-spacing:.03em;
+}
+td{
+    padding:12px;
+    color:#2c3e50;
+    border-bottom:1px solid #f3f4f6;
+}
+tr:hover{background:#f8f9fa;}
+.badge{
+    border-radius:20px;
+    font-size:12px;
+    line-height:1.2;
+    padding:4px 10px;
+    font-weight:500;
+    display:inline-block;
+}
+.badge-active{background:#d1fae5;color:#065f46;}
+.badge-warn{background:#fed7aa;color:#92400e;}
+.badge-paused{background:#e5e7eb;color:#4b5563;}
+.row-action{
+    font-size:12px;
+    padding:6px 10px;
+    background:#f3f4f6;
+    border:1px solid #e5e7eb;
+    border-radius:6px;
+    cursor:pointer;
+}
+.row-action:hover{background:#667eea;border-color:#667eea;color:#fff;}
+
+/* CONTEXT PANEL */
+.context-toggle{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    width:40px;
+    height:40px;
+    background:#667eea;
+    color:#fff;
+    border-radius:50%;
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+    font-weight:500;
+    cursor:pointer;
+    z-index:999;
+}
+.context-panel{
+    position:fixed;
+    right:20px;
+    bottom:80px;
+    width:320px;
+    max-height:60vh;
+    overflow-y:auto;
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:16px;
+    box-shadow:0 24px 50px rgba(0,0,0,0.28);
+    padding:20px;
+    display:none;
+    z-index:1000;
+}
+.context-panel.active{display:block;}
+.context-header{
+    font-size:16px;
+    font-weight:600;
+    color:#2c3e50;
+    margin-bottom:16px;
+}
+.context-box{
+    background:#f8f9fa;
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+    padding:12px;
+    margin-bottom:12px;
+    line-height:1.4;
+    font-size:13px;
+}
+.context-label{
+    font-size:11px;
+    color:#6b7280;
+    margin-bottom:4px;
+    font-weight:500;
+}
+.context-value{
+    font-size:14px;
+    color:#1f2937;
+    font-weight:600;
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+    <div class="main-col">
+        <!-- HEADER FILTER BAR -->
+        <section class="card header-card">
+            <div class="header-left">
+                <h1>🤖 Pulsy Copilot</h1>
+                <div class="sub">Your AI Amazon Ads Partner <span style="font-size:10px;opacity:0.6;">· 모든 데이터는 선택된 기간 기준</span></div>
+            </div>
+
+            <div class="header-right">
+                <div class="block wide">
+                    <div class="block-label">
+                        <span>분석 기간</span>
+                        <span style="font-size:10px;opacity:0.8;">전체 데이터 기준</span>
+                    </div>
+                    <div class="time-row">
+                        <select class="select-lite" style="font-weight:600;">
+                            <option>최근 7일</option>
+                            <option>최근 14일</option>
+                            <option>최근 30일</option>
+                            <option>커스텀</option>
+                        </select>
+                        <div class="date-range" style="background:#f0f9ff;border:1px solid #3b82f6;color:#1e40af;font-weight:600;">
+                            <span>📅</span>
+                            <span>10/20 ~ 10/26 (7일)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="block">
+                    <div class="block-label">
+                        <span>대상</span>
+                        <span style="font-size:10px;opacity:0.8;">계정 / 브랜드</span>
+                    </div>
+                    <select class="select-lite">
+                        <option>전체 계정</option>
+                        <option>Brand A</option>
+                        <option>Brand B</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- KPI SNAPSHOT (Topline business) -->
+        <section class="card">
+            <div class="snapshot-card">
+                <div class="section-header-row">
+                    <h2>핵심 지표</h2>
+                    <div class="section-desc">📅 최근 7일 (10/20~26)</div>
+                </div>
+
+                <div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr);">
+                    <!-- Total Revenue (통합) -->
+                    <div class="kpi-card">
+                        <div class="kpi-topline">
+                            <div class="kpi-label">Total Revenue</div>
+                            <div class="kpi-benchmark">목표 $320K</div>
+                        </div>
+                        <div class="kpi-mainrow">
+                            <div class="kpi-value">$356.2K</div>
+                            <div class="kpi-eval">Good</div>
+                        </div>
+                        <div class="kpi-change positive"><span>↑</span>11.3% vs 목표</div>
+                        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #e5e7eb;font-size:10px;color:#9ca3af;">
+                            <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
+                                <span>Ad-Attributed</span>
+                                <span style="font-weight:600;">$284.5K (79.9%)</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                                <span>Organic</span>
+                                <span style="font-weight:600;">$71.7K (20.1%)</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:6px;border-top:1px solid #f0f0f0;">
+                                <span style="font-size:9px;color:#9ca3af;">Ad Revenue 달성률</span>
+                                <span style="font-size:10px;font-weight:600;color:#3b82f6;">68.0%</span>
+                            </div>
+                            <div style="width:100%;height:4px;background:#e5e7eb;border-radius:2px;overflow:hidden;margin-top:3px;">
+                                <div style="width:68%;height:100%;background:#3b82f6;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ad Efficiency (통합) -->
+                    <div class="kpi-card">
+                        <div class="kpi-topline">
+                            <div class="kpi-label">Ad Efficiency</div>
+                            <div class="kpi-benchmark">목표 ROAS 4.5x</div>
+                        </div>
+                        <div class="kpi-mainrow">
+                            <div class="kpi-value" style="font-size:20px;">3.85x | 19.2%</div>
+                            <div class="kpi-eval bad">Bad</div>
+                        </div>
+                        <div class="kpi-change negative"><span>↓</span>ROAS -0.65x vs 목표</div>
+                        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #e5e7eb;font-size:10px;color:#9ca3af;">
+                            <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
+                                <span>TACoS (Total)</span>
+                                <span style="font-weight:600;color:#ef4444;">19.2%</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                                <span>ACoS (Ad only)</span>
+                                <span style="font-weight:600;color:#ef4444;">26.8%</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:6px;border-top:1px solid #f0f0f0;">
+                                <span style="font-size:9px;color:#9ca3af;">예산 사용률</span>
+                                <span style="font-size:10px;font-weight:600;color:#10b981;">53.7%</span>
+                            </div>
+                            <div style="width:100%;height:4px;background:#e5e7eb;border-radius:2px;overflow:hidden;margin-top:3px;">
+                                <div style="width:53.7%;height:100%;background:#10b981;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Unit Session % (Conversion Rate) -->
+                    <div class="kpi-card">
+                        <div class="kpi-topline">
+                            <div class="kpi-label">Unit Session %</div>
+                            <div class="kpi-benchmark">목표 13%</div>
+                        </div>
+                        <div class="kpi-mainrow">
+                            <div class="kpi-value">13.8%</div>
+                            <div class="kpi-eval normal">Normal</div>
+                        </div>
+                        <div class="kpi-change negative"><span>↓</span>-0.4%p vs 이전 기간</div>
+                        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #e5e7eb;font-size:10px;color:#9ca3af;">
+                            카테고리 평균 12.5%
+                        </div>
+                    </div>
+
+                    <!-- NTB Customers -->
+                    <div class="kpi-card">
+                        <div class="kpi-topline">
+                            <div class="kpi-label">NTB Customers</div>
+                            <div class="kpi-benchmark">목표 2,400명</div>
+                        </div>
+                        <div class="kpi-mainrow">
+                            <div class="kpi-value">2,847</div>
+                            <div class="kpi-eval">Good</div>
+                        </div>
+                        <div class="kpi-change positive"><span>↑</span>+447명 vs 목표</div>
+                        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #e5e7eb;font-size:10px;color:#9ca3af;">
+                            전체 고객의 45.4%
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Layer summary (Outcome / Driver / Lever alignment) -->
+                </div>
+</section>
+
+        <!-- PERFORMANCE FLOW / FUNNEL DETAIL -->
+        <section class="card fullwidth-section">
+            <div class="block-inner">
+                <div class="section-header-row">
+                    <h2>퍼널 분석</h2>
+                    <div class="section-desc">📅 최근 7일 (10/20~26)</div>
+                </div>
+
+                <!-- Channel Filter Bar -->
+                <div style="margin-bottom:20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                    <span style="font-size:11px;color:#9ca3af;font-weight:600;">채널:</span>
+                    <button class="filter-btn active" data-channel="all">전체</button>
+                    <button class="filter-btn" data-channel="sp">SP</button>
+                    <button class="filter-btn" data-channel="dsp">DSP</button>
+                    <button class="filter-btn" data-channel="sb">SB</button>
+                </div>
+
+                <div class="funnel-grid">
+                    <!-- 1. Discovery -->
+                    <div class="funnel-card stage-awareness">
+                        <div class="funnel-header">
+                            <div class="funnel-title-row">
+                                <div class="funnel-title-text">
+                                    <span class="funnel-stage-number">1</span>
+                                    <span>🔍 Discovery</span>
+                                </div>
+                            </div>
+                            <div class="funnel-sub">검색에서 보이는가?</div>
+                        </div>
+
+                        <div class="metric-row">
+                            <div class="metric-left">
+                                <strong>Impressions</strong>
+                                <span class="key-metric-tag">Key</span>
+                            </div>
+                            <div class="metric-right">
+                                <div class="metric-value">12.4M</div>
+                                <div class="metric-delta" style="color:#10b981;">+9% vs 이전 기간</div>
+                                <div class="metric-extra">SP 4.2M · DSP 7.8M · SB 0.4M</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Share of Voice</div>
+                            <div class="metric-right">
+                                <div class="metric-value positive">24.8%</div>
+                                <div class="metric-delta" style="color:#10b981;">+3.2%p vs 이전 기간</div>
+                                <div class="metric-extra">주요 키워드 기준</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Organic Rank</div>
+                            <div class="metric-right">
+                                <div class="metric-value positive">#8.4</div>
+                                <div class="metric-delta" style="color:#10b981;">+1.2 vs 이전 기간</div>
+                                <div class="metric-extra">주요 키워드 15개 평균</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Ad Rank</div>
+                            <div class="metric-right">
+                                <div class="metric-value positive">#2.8</div>
+                                <div class="metric-delta" style="color:#10b981;">+0.4 vs 이전 기간</div>
+                                <div class="metric-extra">광고 평균 게재 순위</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Search Impression Share</div>
+                            <div class="metric-right">
+                                <div class="metric-value">68.4%</div>
+                                <div class="metric-delta" style="color:#10b981;">+3.2%p vs 이전 기간</div>
+                                <div class="metric-extra">가능 노출의 68% 확보</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Brand Search Volume</div>
+                            <div class="metric-right">
+                                <div class="metric-value">48.2K</div>
+                                <div class="metric-delta" style="color:#10b981;">+12% vs 이전 기간</div>
+                                <div class="metric-extra">브랜드명 직접 검색</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Engagement -->
+                    <div class="funnel-card stage-consideration">
+                        <div class="funnel-header">
+                            <div class="funnel-title-row">
+                                <div class="funnel-title-text">
+                                    <span class="funnel-stage-number">2</span>
+                                    <span>👀 Engagement</span>
+                                </div>
+                            </div>
+                            <div class="funnel-sub">상품에 관심을 보이는가?</div>
+                        </div>
+
+                        <div class="metric-row">
+                            <div class="metric-left">
+                                <strong>Detail Page Views</strong>
+                                <span class="key-metric-tag">Key</span>
+                            </div>
+                            <div class="metric-right">
+                                <div class="metric-value">182K</div>
+                                <div class="metric-delta" style="color:#10b981;">+2% vs 이전 기간</div>
+                                <div class="metric-extra">클릭의 61%</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">CTR</div>
+                            <div class="metric-right">
+                                <div class="metric-value">2.4%</div>
+                                <div class="metric-delta" style="color:#10b981;">+0.2%p vs 이전 기간</div>
+                                <div class="metric-extra">업계 평균 2.0%</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Time on Page</div>
+                            <div class="metric-right">
+                                <div class="metric-value">1:45</div>
+                                <div class="metric-delta" style="color:#10b981;">+8초 vs 이전 기간</div>
+                                <div class="metric-extra">평균 체류 시간</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Page Views per Session</div>
+                            <div class="metric-right">
+                                <div class="metric-value">2.8</div>
+                                <div class="metric-delta" style="color:#10b981;">+0.2 vs 이전 기간</div>
+                                <div class="metric-extra">페이지당 탐색 깊이</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Add-to-Cart Rate</div>
+                            <div class="metric-right">
+                                <div class="metric-value positive">18.2%</div>
+                                <div class="metric-delta" style="color:#6b7280;">flat vs 이전 기간</div>
+                                <div class="metric-extra">목표 ≥18%</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Wishlist Add Rate</div>
+                            <div class="metric-right">
+                                <div class="metric-value">6.8%</div>
+                                <div class="metric-delta" style="color:#10b981;">+0.5%p vs 이전 기간</div>
+                                <div class="metric-extra">위시리스트 추가율</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Conversion -->
+                    <div class="funnel-card stage-conversion">
+                        <div class="funnel-header">
+                            <div class="funnel-title-row">
+                                <div class="funnel-title-text">
+                                    <span class="funnel-stage-number">3</span>
+                                    <span>💰 Conversion</span>
+                                </div>
+                            </div>
+                            <div class="funnel-sub">실제로 구매하는가?</div>
+                        </div>
+
+                        <div class="metric-row">
+                            <div class="metric-left">
+                                <strong>Unit Session %</strong>
+                                <span class="key-metric-tag">Key</span>
+                            </div>
+                            <div class="metric-right">
+                                <div class="metric-value positive">14.2%</div>
+                                <div class="metric-delta" style="color:#10b981;">+1.2%p vs 목표</div>
+                                <div class="metric-extra">목표 13% | 평균 12.5%</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Orders</div>
+                            <div class="metric-right">
+                                <div class="metric-value">25.9K</div>
+                                <div class="metric-delta" style="color:#10b981;">+8% vs 이전 기간</div>
+                                <div class="metric-extra">주문 수</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Revenue</div>
+                            <div class="metric-right">
+                                <div class="metric-value">$324K</div>
+                                <div class="metric-delta" style="color:#10b981;">+12% vs 이전 기간</div>
+                                <div class="metric-extra">총 매출</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">AOV</div>
+                            <div class="metric-right">
+                                <div class="metric-value">$42.10</div>
+                                <div class="metric-delta" style="color:#10b981;">+$0.75 vs 이전 기간</div>
+                                <div class="metric-extra">업계 평균 $39</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Buy Box %</div>
+                            <div class="metric-right">
+                                <div class="metric-value positive">94.2%</div>
+                                <div class="metric-delta" style="color:#10b981;">+1.2%p vs 이전 기간</div>
+                                <div class="metric-extra">목표 ≥90%</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Review Rating</div>
+                            <div class="metric-right">
+                                <div class="metric-value positive">4.5★</div>
+                                <div class="metric-delta" style="color:#10b981;">+0.1 vs 이전 기간</div>
+                                <div class="metric-extra">1,248개 리뷰</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Efficiency -->
+                    <div class="funnel-card stage-efficiency">
+                        <div class="funnel-header">
+                            <div class="funnel-title-row">
+                                <div class="funnel-title-text">
+                                    <span class="funnel-stage-number">4</span>
+                                    <span>⚡ Efficiency</span>
+                                </div>
+                            </div>
+                            <div class="funnel-sub">광고비를 효율적으로 쓰는가?</div>
+                        </div>
+
+                        <div class="metric-row">
+                            <div class="metric-left">
+                                <strong>ROAS</strong>
+                                <span class="key-metric-tag">Key</span>
+                            </div>
+                            <div class="metric-right">
+                                <div class="metric-value positive">4.85x</div>
+                                <div class="metric-delta" style="color:#10b981;">+0.35x vs 목표</div>
+                                <div class="metric-extra">목표 ≥4.5x</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">TACoS</div>
+                            <div class="metric-right">
+                                <div class="metric-value positive">16.8%</div>
+                                <div class="metric-delta" style="color:#10b981;">-1.2%p vs 목표</div>
+                                <div class="metric-extra">목표 ≤18%</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">ACoS</div>
+                            <div class="metric-right">
+                                <div class="metric-value">22.4%</div>
+                                <div class="metric-delta" style="color:#10b981;">-0.6%p vs 이전 기간</div>
+                                <div class="metric-extra">목표 ≤24%</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">CPA</div>
+                            <div class="metric-right">
+                                <div class="metric-value">$9.45</div>
+                                <div class="metric-delta" style="color:#10b981;">-$0.22 vs 이전 기간</div>
+                                <div class="metric-extra">목표 ≤$10</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">CPC</div>
+                            <div class="metric-right">
+                                <div class="metric-value negative">$1.24</div>
+                                <div class="metric-delta" style="color:#ef4444;">+$0.15 vs 이전 기간</div>
+                                <div class="metric-extra">SP $1.42 · DSP $0.89</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Budget Utilization</div>
+                            <div class="metric-right">
+                                <div class="metric-value positive">95.2%</div>
+                                <div class="metric-delta" style="color:#10b981;">+2.1%p vs 이전 기간</div>
+                                <div class="metric-extra">예산 소진율</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Growth -->
+                    <div class="funnel-card stage-retention">
+                        <div class="funnel-header">
+                            <div class="funnel-title-row">
+                                <div class="funnel-title-text">
+                                    <span class="funnel-stage-number">5</span>
+                                    <span>📈 Growth</span>
+                                </div>
+                            </div>
+                            <div class="funnel-sub">지속 가능하게 성장하는가?</div>
+                        </div>
+
+                        <div class="metric-row">
+                            <div class="metric-left">
+                                <strong>NTB %</strong>
+                                <span class="key-metric-tag">Key</span>
+                            </div>
+                            <div class="metric-right">
+                                <div class="metric-value positive">45.4%</div>
+                                <div class="metric-delta" style="color:#10b981;">+3.2%p vs 이전 기간</div>
+                                <div class="metric-extra">신규 고객 2,847명</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Organic Sales %</div>
+                            <div class="metric-right">
+                                <div class="metric-value positive">20.1%</div>
+                                <div class="metric-delta" style="color:#10b981;">+2.3%p vs 이전 기간</div>
+                                <div class="metric-extra">$71.7K / $356.2K</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Repeat Purchase Rate</div>
+                            <div class="metric-right">
+                                <div class="metric-value">9.4%</div>
+                                <div class="metric-delta" style="color:#10b981;">+0.4%p vs 이전 기간</div>
+                                <div class="metric-extra">카테고리 평균 8.8%</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Return Rate</div>
+                            <div class="metric-right">
+                                <div class="metric-value positive">4.2%</div>
+                                <div class="metric-delta" style="color:#10b981;">-0.8%p vs 이전 기간</div>
+                                <div class="metric-extra">목표 ≤5% | 반품률 감소</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Category BSR</div>
+                            <div class="metric-right">
+                                <div class="metric-value positive">#142</div>
+                                <div class="metric-delta" style="color:#10b981;">+18 vs 이전 기간</div>
+                                <div class="metric-extra">베스트셀러 순위 상승</div>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-left">Brand Search Share</div>
+                            <div class="metric-right">
+                                <div class="metric-value positive">16.2%</div>
+                                <div class="metric-delta" style="color:#10b981;">+2.1%p vs 이전 기간</div>
+                                <div class="metric-extra">전체 검색 중 브랜드 검색</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ANALYTICS / TABLES -->
+        <section class="card">
+            <div class="analytics-wrapper">
+                <div class="chart-card">
+                    <div class="flex-between">
+                        <div class="card-title">일별 트렌드 <span style="font-size:12px;color:#6b7280;font-weight:400;">📅 최근 7일 (10/20~26)</span></div>
+                        <div class="chart-filters">
+                            <button class="filter-btn active" data-channel="all">전체 (All)</button>
+                            <button class="filter-btn" data-channel="sp">SP</button>
+                            <button class="filter-btn" data-channel="dsp">DSP</button>
+                            <button class="filter-btn" data-channel="sb">SB</button>
+                        </div>
+                    </div>
+                    <div class="chart-area">
+                        <div class="chart-bars-container">
+                            <!-- Y-Axis Left (Revenue/Spend) -->
+                            <div style="position:absolute;left:-45px;top:0;bottom:40px;display:flex;flex-direction:column;justify-content:space-between;font-size:11px;color:#9ca3af;text-align:right;width:40px;">
+                                <span>$60K</span>
+                                <span>$45K</span>
+                                <span>$30K</span>
+                                <span>$15K</span>
+                                <span>$0</span>
+                            </div>
+                            
+                            <!-- Y-Axis Right (ROAS) -->
+                            <div style="position:absolute;right:-45px;top:0;bottom:40px;display:flex;flex-direction:column;justify-content:space-between;font-size:11px;color:#10b981;text-align:left;width:40px;">
+                                <span>6x</span>
+                                <span>4.5x</span>
+                                <span>3x</span>
+                                <span>1.5x</span>
+                                <span>0x</span>
+                            </div>
+                            
+                            <!-- Grid Lines -->
+                            <div style="position:absolute;top:0;left:0;right:0;bottom:40px;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;">
+                                <div style="border-top:1px dashed #e5e7eb;"></div>
+                                <div style="border-top:1px dashed #e5e7eb;"></div>
+                                <div style="border-top:1px dashed #e5e7eb;"></div>
+                                <div style="border-top:1px dashed #e5e7eb;"></div>
+                                <div style="border-top:1px dashed #e5e7eb;"></div>
+                            </div>
+                            
+                            <!-- SVG Line for ROAS -->
+                            <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5;">
+                                <polyline 
+                                    points="9%,27.5% 23%,22.5% 37%,26% 51%,29% 65%,31% 79%,21% 93%,32.5%"
+                                    fill="none"
+                                    stroke="#059669"
+                                    stroke-width="4"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    opacity="1.0"
+                                    style="filter: drop-shadow(0 2px 4px rgba(5, 150, 105, 0.3));"
+                                />
+                            </svg>
+                            
+                            <!-- Day 1 -->
+                            <div class="day-group">
+                                <div class="bars">
+                                    <div class="revenue-bar stacked" style="height:120px">
+                                        <div class="channel-segment sp" style="height:40%"></div>
+                                        <div class="channel-segment dsp" style="height:50%"></div>
+                                        <div class="channel-segment sb" style="height:10%"></div>
+                                    </div>
+                                    <div class="spend-bar" style="height:25px"></div>
+                                    <div class="roas-dot" style="bottom:145px"></div>
+                                </div>
+                                <div class="day-label">10/20<br><span style="font-weight:600;color:#111;">$42K</span></div>
+                            </div>
+                            <!-- Day 2 -->
+                            <div class="day-group">
+                                <div class="bars">
+                                    <div class="revenue-bar stacked" style="height:145px">
+                                        <div class="channel-segment sp" style="height:45%"></div>
+                                        <div class="channel-segment dsp" style="height:45%"></div>
+                                        <div class="channel-segment sb" style="height:10%"></div>
+                                    </div>
+                                    <div class="spend-bar" style="height:28px"></div>
+                                    <div class="roas-dot" style="bottom:155px"></div>
+                                </div>
+                                <div class="day-label">10/21<br><span style="font-weight:600;color:#111;">$51K</span></div>
+                            </div>
+                            <!-- Day 3 -->
+                            <div class="day-group">
+                                <div class="bars">
+                                    <div class="revenue-bar stacked" style="height:110px">
+                                        <div class="channel-segment sp" style="height:38%"></div>
+                                        <div class="channel-segment dsp" style="height:52%"></div>
+                                        <div class="channel-segment sb" style="height:10%"></div>
+                                    </div>
+                                    <div class="spend-bar" style="height:23px"></div>
+                                    <div class="roas-dot" style="bottom:148px"></div>
+                                </div>
+                                <div class="day-label">10/22<br><span style="font-weight:600;color:#111;">$39K</span></div>
+                            </div>
+                            <!-- Day 4 -->
+                            <div class="day-group">
+                                <div class="bars">
+                                    <div class="revenue-bar stacked" style="height:155px">
+                                        <div class="channel-segment sp" style="height:42%"></div>
+                                        <div class="channel-segment dsp" style="height:48%"></div>
+                                        <div class="channel-segment sb" style="height:10%"></div>
+                                    </div>
+                                    <div class="spend-bar" style="height:30px"></div>
+                                    <div class="roas-dot" style="bottom:142px"></div>
+                                </div>
+                                <div class="day-label">10/23<br><span style="font-weight:600;color:#111;">$54K</span></div>
+                            </div>
+                            <!-- Day 5 -->
+                            <div class="day-group">
+                                <div class="bars">
+                                    <div class="revenue-bar stacked" style="height:128px">
+                                        <div class="channel-segment sp" style="height:40%"></div>
+                                        <div class="channel-segment dsp" style="height:50%"></div>
+                                        <div class="channel-segment sb" style="height:10%"></div>
+                                    </div>
+                                    <div class="spend-bar" style="height:26px"></div>
+                                    <div class="roas-dot" style="bottom:138px"></div>
+                                </div>
+                                <div class="day-label">10/24<br><span style="font-weight:600;color:#111;">$45K</span></div>
+                            </div>
+                            <!-- Day 6 -->
+                            <div class="day-group">
+                                <div class="bars">
+                                    <div class="revenue-bar stacked" style="height:165px">
+                                        <div class="channel-segment sp" style="height:43%"></div>
+                                        <div class="channel-segment dsp" style="height:47%"></div>
+                                        <div class="channel-segment sb" style="height:10%"></div>
+                                    </div>
+                                    <div class="spend-bar" style="height:29px"></div>
+                                    <div class="roas-dot" style="bottom:158px"></div>
+                                </div>
+                                <div class="day-label">10/25<br><span style="font-weight:600;color:#111;">$57K</span></div>
+                            </div>
+                            <!-- Day 7 -->
+                            <div class="day-group">
+                                <div class="bars">
+                                    <div class="revenue-bar stacked" style="height:150px">
+                                        <div class="channel-segment sp" style="height:41%"></div>
+                                        <div class="channel-segment dsp" style="height:49%"></div>
+                                        <div class="channel-segment sb" style="height:10%"></div>
+                                    </div>
+                                    <div class="spend-bar" style="height:32px"></div>
+                                    <div class="roas-dot" style="bottom:135px"></div>
+                                </div>
+                                <div class="day-label">10/26<br><span style="font-weight:600;color:#111;">$53K</span></div>
+                            </div>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-color sp"></div>
+                                <span>SP</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color dsp"></div>
+                                <span>DSP</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color sb"></div>
+                                <span>SB</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color spend"></div>
+                                <span>Spend</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot"></div>
+                                <span>ROAS</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-head">
+                        <div class="card-title">Campaign Performance</div>
+                        <span class="status-dot"></span>
+                    </div>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Channel</th>
+                            <th>Status</th>
+                            <th>Spend</th>
+                            <th>ROAS</th>
+                            <th>CPC</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><strong>Brand - Exact</strong><br><span style="font-size:11px;color:#6b7280;">브랜드 키워드 정확매칭</span></td>
+                            <td><span style="font-size:11px;background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:4px;font-weight:600;">SP</span></td>
+                            <td><span class="badge badge-active">Active</span></td>
+                            <td>$10,245</td>
+                            <td style="color:#10b981;">8.5x</td>
+                            <td>$0.52</td>
+                            <td><button class="row-action">Scale</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Category - Broad</strong><br><span style="font-size:11px;color:#6b7280;">카테고리 일반 검색어 타겟</span></td>
+                            <td><span style="font-size:11px;background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:4px;font-weight:600;">SP</span></td>
+                            <td><span class="badge badge-active">Active</span></td>
+                            <td>$25,120</td>
+                            <td style="color:#10b981;">4.2x</td>
+                            <td>$1.23</td>
+                            <td><button class="row-action">Review</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Competitor - Conquest</strong><br><span style="font-size:11px;color:#6b7280;">경쟁사 브랜드 키워드 탈취</span></td>
+                            <td><span style="font-size:11px;background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:4px;font-weight:600;">SP</span></td>
+                            <td><span class="badge badge-warn">Warning</span></td>
+                            <td>$15,890</td>
+                            <td style="color:#ef4444;">2.8x</td>
+                            <td>$2.14</td>
+                            <td><button class="row-action">Fix CPC</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Product - Defense</strong><br><span style="font-size:11px;color:#6b7280;">우리 제품 상세페이지 방어</span></td>
+                            <td><span style="font-size:11px;background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:4px;font-weight:600;">SP</span></td>
+                            <td><span class="badge badge-active">Active</span></td>
+                            <td>$7,445</td>
+                            <td style="color:#10b981;">5.1x</td>
+                            <td>$0.89</td>
+                            <td><button class="row-action">Hold</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>In-Market Audience</strong><br><span style="font-size:11px;color:#6b7280;">구매 의향 고객 타겟팅</span></td>
+                            <td><span style="font-size:11px;background:#fef3c7;color:#92400e;padding:3px 8px;border-radius:4px;font-weight:600;">DSP</span></td>
+                            <td><span class="badge badge-active">Active</span></td>
+                            <td>$18,450</td>
+                            <td style="color:#10b981;">5.2x</td>
+                            <td>$0.76</td>
+                            <td><button class="row-action">Scale</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Retargeting - Cart Abandoners</strong><br><span style="font-size:11px;color:#6b7280;">장바구니 이탈 고객 리타게팅</span></td>
+                            <td><span style="font-size:11px;background:#fef3c7;color:#92400e;padding:3px 8px;border-radius:4px;font-weight:600;">DSP</span></td>
+                            <td><span class="badge badge-active">Active</span></td>
+                            <td>$9,120</td>
+                            <td style="color:#10b981;">6.7x</td>
+                            <td>$0.58</td>
+                            <td><button class="row-action">Scale</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Brand Awareness - Video</strong><br><span style="font-size:11px;color:#6b7280;">Fire TV 스트리밍 비디오 광고</span></td>
+                            <td><span style="font-size:11px;background:#fef3c7;color:#92400e;padding:3px 8px;border-radius:4px;font-weight:600;">DSP</span></td>
+                            <td><span class="badge badge-active">Active</span></td>
+                            <td>$12,340</td>
+                            <td style="color:#6b7280;">3.1x</td>
+                            <td>$0.42</td>
+                            <td><button class="row-action">Monitor</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Brand Keywords - Video</strong><br><span style="font-size:11px;color:#6b7280;">브랜드 검색 결과 상단 비디오</span></td>
+                            <td><span style="font-size:11px;background:#dcfce7;color:#166534;padding:3px 8px;border-radius:4px;font-weight:600;">SB</span></td>
+                            <td><span class="badge badge-active">Active</span></td>
+                            <td>$6,780</td>
+                            <td style="color:#10b981;">7.2x</td>
+                            <td>$1.15</td>
+                            <td><button class="row-action">Hold</button></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- AI RAIL -->
+    <aside class="ai-rail">
+        <div class="ai-head-topline">우선 처리할 일</div>
+        <div class="ai-title-row">
+            <div class="ai-title">🤖 AI Insights & Next Actions</div>
+            <div class="ai-badge">AI Powered</div>
+        </div>
+        <div class="ai-note">
+            분석 기간 <strong>최근 7일 (10/20~26)</strong> 기준 | 데이터: DSP · AMC · Seller
+        </div>
+
+        <!-- Context Bar -->
+        <div class="context-bar">
+            <div class="context-bar-header">📅 분석 기간 내 주요 이벤트</div>
+            <div class="context-item">🎉 Prime Day (10/23-24) - 카테고리 경쟁 심화</div>
+            <div class="context-item">⚙️ 예산 재배치 실행 (10/24): Conquest -20% → Brand-Exact +20%</div>
+        </div>
+
+        <!-- Insight: CPC -->
+        <div class="insight-card">
+            <div class="insight-header-row">
+                <div class="insight-left">
+                    <span class="insight-type type-critical">🚨 Critical</span>
+                    <span>경쟁 CPC 급등</span>
+                </div>
+                <div class="confidence-pill">82%</div>
+            </div>
+
+            <div class="insight-headline">입찰 단가 압박, 전환 효율 악화 중</div>
+
+            <div class="insight-body">
+                <strong>상황:</strong> 경쟁사 Brand X가 PBDD 프로모션 시작 이후 카테고리 키워드 CPC가 <span class="ai-inline-emph">+15%</span> 상승<br>
+                <strong>영향:</strong> 'Competitor - Conquest' 캠페인 ROAS <span class="ai-inline-emph" style="color:#ef4444;">2.8x</span>까지 하락 (한계 구간)
+            </div>
+
+            <div class="evidence-block">
+                <div class="evidence-label" style="margin-bottom:8px;font-weight:600;">📊 데이터</div>
+                <div class="evidence-row">
+                    <span class="evidence-label">CPC 변화</span>
+                    <span class="evidence-value">$2.14 → $2.47</span>
+                </div>
+                <div class="evidence-row">
+                    <span class="evidence-label">ROAS 변화</span>
+                    <span class="evidence-value" style="color:#ef4444;">3.1x → 2.8x</span>
+                </div>
+                <div class="evidence-source">
+                    DSP Auction, Seller Revenue (10/20-26)
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button class="action-primary">📄 상세 분석 보기</button>
+                <button class="action-secondary">닫기</button>
+            </div>
+        </div>
+
+        <!-- Insight: NTB -->
+        <div class="insight-card">
+            <div class="insight-header-row">
+                <div class="insight-left">
+                    <span class="insight-type type-opportunity">💡 Opportunity</span>
+                    <span>NTB 신규 유입 강함</span>
+                </div>
+                <div class="confidence-pill">76%</div>
+            </div>
+
+            <div class="insight-headline">신규 고객 유입이 매우 강함</div>
+
+            <div class="insight-body">
+                <strong>발견:</strong> 지난 7일 신규 고객 비중(NTB) <span class="ai-inline-emph">45.4%</span>로 높음<br>
+                <strong>제안:</strong> 신규 유입보다 <span class="ai-inline-emph">리텐션 전환 캠페인</span> 강화 타이밍
+            </div>
+
+            <div class="evidence-block">
+                <div class="evidence-label" style="margin-bottom:8px;font-weight:600;">📊 데이터</div>
+                <div class="evidence-row">
+                    <span class="evidence-label">NTB 비중</span>
+                    <span class="evidence-value" style="color:#10b981;">45.4%</span>
+                </div>
+                <div class="evidence-row">
+                    <span class="evidence-label">재구매율</span>
+                    <span class="evidence-value">9.4% (안정)</span>
+                </div>
+                <div class="evidence-source">
+                    AMC NTB dataset, Seller repeat-purchase log
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button class="action-primary">📄 리텐션 전략 보기</button>
+                <button class="action-secondary">닫기</button>
+            </div>
+        </div>
+
+        <!-- Insight: Budget shift -->
+        <div class="insight-card">
+            <div class="insight-header-row">
+                <div class="insight-left">
+                    <span class="insight-type type-budget">💰 Budget</span>
+                    <span>예산 재분배 필요</span>
+                </div>
+                <div class="confidence-pill">89%</div>
+            </div>
+
+            <div class="insight-headline">성과 낮은 캠페인 → 고효율 캠페인 이동 추천</div>
+
+            <div class="insight-body">
+                <strong>발견:</strong> 'Brand - Exact' 캠페인 ROAS <span class="ai-inline-emph" style="color:#10b981;">8.5x</span> (예산 소진율 105%)<br>
+                <strong>제안:</strong> 'Competitor - Conquest' (2.8x)에서 20% 이동 시 전체 ROAS 개선 예상
+            </div>
+
+            <div class="evidence-block">
+                <div class="evidence-label" style="margin-bottom:8px;font-weight:600;">📊 데이터</div>
+                <div class="evidence-row">
+                    <span class="evidence-label">Brand - Exact</span>
+                    <span class="evidence-value" style="color:#10b981;">ROAS 8.5x</span>
+                </div>
+                <div class="evidence-row">
+                    <span class="evidence-label">Competitor - Conquest</span>
+                    <span class="evidence-value" style="color:#ef4444;">ROAS 2.8x</span>
+                </div>
+                <div class="evidence-source">
+                    DSP Spend, Seller Revenue
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button class="action-primary">📄 예산 시뮬레이션 보기</button>
+                <button class="action-secondary">닫기</button>
+            </div>
+        </div>
+
+        <!-- Insight: Dayparting -->
+        <div class="insight-card">
+            <div class="insight-header-row">
+                <div class="insight-left">
+                    <span class="insight-type type-trend">📈 Trend</span>
+                    <span>시간대 성과 편차</span>
+                </div>
+                <div class="confidence-pill">71%</div>
+            </div>
+
+            <div class="insight-headline">오전 6~10시 성과가 다른 시간 대비 +25%</div>
+
+            <div class="insight-body">
+                <strong>발견:</strong> 오전 6~10시 ROAS가 다른 시간대 대비 <span class="ai-inline-emph">+25%</span> 높음<br>
+                <strong>제안:</strong> Dayparting(시간대별 입찰)으로 해당 시간 예산 집중
+            </div>
+
+            <div class="evidence-block">
+                <div class="evidence-label" style="margin-bottom:8px;font-weight:600;">📊 데이터</div>
+                <div class="evidence-row">
+                    <span class="evidence-label">ROAS (6~10AM)</span>
+                    <span class="evidence-value" style="color:#10b981;">5.2x</span>
+                </div>
+                <div class="evidence-row">
+                    <span class="evidence-label">ROAS (기타 시간)</span>
+                    <span class="evidence-value">4.1x</span>
+                </div>
+                <div class="evidence-source">
+                    AMC hourly conv log
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button class="action-primary">📄 시간대별 분석 보기</button>
+                <button class="action-secondary">닫기</button>
+            </div>
+        </div>
+
+        <!-- Insight: DSP Viewability -->
+        <div class="insight-card">
+            <div class="insight-header-row">
+                <div class="insight-left">
+                    <span class="insight-type type-opportunity">💡 Opportunity</span>
+                    <span>DSP 매체 효율화</span>
+                </div>
+                <div class="confidence-pill">84%</div>
+            </div>
+
+            <div class="insight-headline">Open Exchange 매체 Viewability 낮음</div>
+
+            <div class="insight-body">
+                <strong>문제:</strong> Open Exchange 매체 Viewability <span class="ai-inline-emph" style="color:#ef4444;">62%</span> (MRC 기준 미달)<br>
+                <strong>제안:</strong> 프리미엄 매체(IMDb, Twitch)로 예산 이동 시 효율 개선
+            </div>
+
+            <div class="evidence-block">
+                <div class="evidence-label" style="margin-bottom:8px;font-weight:600;">📊 데이터</div>
+                <div class="evidence-row">
+                    <span class="evidence-label">Open Exchange</span>
+                    <span class="evidence-value" style="color:#ef4444;">Viewability 62%</span>
+                </div>
+                <div class="evidence-row">
+                    <span class="evidence-label">Premium (IMDb/Twitch)</span>
+                    <span class="evidence-value" style="color:#10b981;">Viewability 89%</span>
+                </div>
+                <div class="evidence-source">
+                    DSP Supply Report
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button class="action-primary">📄 매체 최적화 보기</button>
+                <button class="action-secondary">닫기</button>
+            </div>
+        </div>
+
+        <!-- Insight: Share of Voice -->
+        <div class="insight-card">
+            <div class="insight-header-row">
+                <div class="insight-left">
+                    <span class="insight-type type-opportunity">💡 Opportunity</span>
+                    <span>Share of Voice 상승</span>
+                </div>
+                <div class="confidence-pill">79%</div>
+            </div>
+
+            <div class="insight-headline">주요 키워드에서 시장 점유율 증가 추세</div>
+
+            <div class="insight-body">
+                <strong>발견:</strong> 지난 7일간 핵심 키워드 SOV가 <span class="ai-inline-emph" style="color:#10b981;">24.8%</span>로 3.2%p 상승<br>
+                <strong>의미:</strong> 광고 최적화로 시장 내 브랜드 가시성이 개선되고 있음
+            </div>
+
+            <div class="evidence-block">
+                <div class="evidence-label" style="margin-bottom:8px;font-weight:600;">📊 데이터</div>
+                <div class="evidence-row">
+                    <span class="evidence-label">주요 키워드 SOV</span>
+                    <span class="evidence-value" style="color:#10b981;">24.8% (+3.2%p)</span>
+                </div>
+                <div class="evidence-row">
+                    <span class="evidence-label">카테고리 평균</span>
+                    <span class="evidence-value">16.6%</span>
+                </div>
+                <div class="evidence-row">
+                    <span class="evidence-label">성장률</span>
+                    <span class="evidence-value" style="color:#10b981;">+14.8% vs 이전 기간</span>
+                </div>
+                <div class="evidence-source">
+                    Amazon Ads API, Category Impressions Data
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button class="action-primary">📄 키워드별 SOV 분석</button>
+                <button class="action-secondary">닫기</button>
+            </div>
+        </div>
+
+        <!-- Recent actions log -->
+        <div class="ai-footer">
+            <div class="ai-footer-head">
+                <span style="font-size:11px;line-height:1;color:#9ca3af;">📌 최근 활동은 오른쪽 하단 버튼 확인</span>
+            </div>
+        </div>
+
+    </aside>
+</div>
+
+<!-- floating context drawer -->
+<div class="context-toggle" onclick="toggleContext()">📌</div>
+<div class="context-panel" id="contextPanel">
+    <div class="context-header">📌 Recent Updates & Context</div>
+
+    <!-- Market News Section -->
+    <div style="margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:600;color:#374151;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+            <span>📰</span>
+            <span>Market News</span>
+        </div>
+        
+        <div class="context-box" style="border-left:3px solid #3b82f6;">
+            <div style="font-size:11px;color:#6b7280;margin-bottom:4px;">2025-10-25</div>
+            <div style="font-size:13px;color:#1f2937;font-weight:500;margin-bottom:4px;">
+                Amazon, Prime Day 11/15 공식 발표
+            </div>
+            <div style="font-size:12px;color:#6b7280;">
+                → 예산 증액 및 프로모션 준비 검토 필요
+            </div>
+        </div>
+
+        <div class="context-box" style="border-left:3px solid #ef4444;">
+            <div style="font-size:11px;color:#6b7280;margin-bottom:4px;">2025-10-24</div>
+            <div style="font-size:13px;color:#1f2937;font-weight:500;margin-bottom:4px;">
+                경쟁사 Brand X, PBDD 프로모션 시작
+            </div>
+            <div style="font-size:12px;color:#6b7280;">
+                → CPC 압박 예상, 입찰 전략 재검토 중
+            </div>
+        </div>
+
+        <div class="context-box" style="border-left:3px solid #f59e0b;">
+            <div style="font-size:11px;color:#6b7280;margin-bottom:4px;">2025-10-23</div>
+            <div style="font-size:13px;color:#1f2937;font-weight:500;margin-bottom:4px;">
+                카테고리 평균 CPC +12% 상승
+            </div>
+            <div style="font-size:12px;color:#6b7280;">
+                → 업계 전반적 트렌드, 효율 관리 강화
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Actions Section -->
+    <div style="margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:600;color:#374151;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+            <span>⚡</span>
+            <span>Recent Actions</span>
+        </div>
+
+        <div class="context-box" style="background:#f0fdf4;border:1px solid #86efac;">
+            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:4px;">
+                <div style="font-size:11px;color:#6b7280;">2025-10-26 09:30</div>
+                <div style="font-size:10px;background:#10b981;color:#fff;padding:2px 6px;border-radius:4px;">✓ 완료</div>
+            </div>
+            <div style="font-size:13px;color:#1f2937;font-weight:500;margin-bottom:4px;">
+                Broad 키워드 입찰가 -10% 적용
+            </div>
+            <div style="font-size:11px;color:#6b7280;">
+                담당: Ellie (PSM) • 영향: CPC -$0.18
+            </div>
+        </div>
+
+        <div class="context-box" style="background:#f0fdf4;border:1px solid #86efac;">
+            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:4px;">
+                <div style="font-size:11px;color:#6b7280;">2025-10-24 14:20</div>
+                <div style="font-size:10px;background:#10b981;color:#fff;padding:2px 6px;border-radius:4px;">✓ 완료</div>
+            </div>
+            <div style="font-size:13px;color:#1f2937;font-weight:500;margin-bottom:4px;">
+                예산 재분배 실행
+            </div>
+            <div style="font-size:11px;color:#6b7280;">
+                Competitor-Conquest -20% → Brand-Exact +20%<br>
+                담당: System Auto • ROAS 개선 예상
+            </div>
+        </div>
+
+        <div class="context-box" style="background:#f0fdf4;border:1px solid #86efac;">
+            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:4px;">
+                <div style="font-size:11px;color:#6b7280;">2025-10-22 16:45</div>
+                <div style="font-size:10px;background:#10b981;color:#fff;padding:2px 6px;border-radius:4px;">✓ 완료</div>
+            </div>
+            <div style="font-size:13px;color:#1f2937;font-weight:500;margin-bottom:4px;">
+                저효율 키워드 18개 일시정지
+            </div>
+            <div style="font-size:11px;color:#6b7280;">
+                담당: John (AM) • 예산 절감: $420/day
+            </div>
+        </div>
+
+        <div class="context-box" style="background:#fef3c7;border:1px solid #fcd34d;">
+            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:4px;">
+                <div style="font-size:11px;color:#6b7280;">2025-10-21 11:15</div>
+                <div style="font-size:10px;background:#f59e0b;color:#fff;padding:2px 6px;border-radius:4px;">⏳ 진행중</div>
+            </div>
+            <div style="font-size:13px;color:#1f2937;font-weight:500;margin-bottom:4px;">
+                신규 고객 대상 리뷰 요청 캠페인
+            </div>
+            <div style="font-size:11px;color:#6b7280;">
+                담당: Marketing Team • 목표: +50 리뷰
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Context Section -->
+    <div>
+        <div style="font-size:13px;font-weight:600;color:#374151;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+            <span>📊</span>
+            <span>Quick Context</span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
+            <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;padding:8px;">
+                <div style="color:#6b7280;font-size:10px;margin-bottom:2px;">재고 커버리지</div>
+                <div style="color:#1f2937;font-weight:600;">2,450 units</div>
+                <div style="color:#6b7280;font-size:10px;">15일분 남음</div>
+            </div>
+            <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;padding:8px;">
+                <div style="color:#6b7280;font-size:10px;margin-bottom:2px;">리뷰 스코어</div>
+                <div style="color:#1f2937;font-weight:600;">4.5★</div>
+                <div style="color:#10b981;font-size:10px;">+0.2 vs 이전</div>
+            </div>
+            <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;padding:8px;">
+                <div style="color:#6b7280;font-size:10px;margin-bottom:2px;">주간 예산</div>
+                <div style="color:#1f2937;font-weight:600;">$62K</div>
+                <div style="color:#10b981;font-size:10px;">53.7% 사용</div>
+            </div>
+            <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;padding:8px;">
+                <div style="color:#6b7280;font-size:10px;margin-bottom:2px;">다음 이벤트</div>
+                <div style="color:#1f2937;font-weight:600;">Prime Day</div>
+                <div style="color:#6b7280;font-size:10px;">D-20 (11/15)</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleContext(){
+    const p = document.getElementById('contextPanel');
+    p.classList.toggle('active');
+}
+// mock demo interactions
+document.querySelectorAll('.bar').forEach(bar=>{
+    bar.addEventListener('click',function(){
+        alert('상세 데이터: ' + this.querySelector('.bar-value').textContent);
+    });
+});
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click',function(){
+        document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+document.querySelectorAll('.action-primary').forEach(btn=>{
+    btn.addEventListener('click',function(){
+        this.textContent='✓ 적용됨';
+        this.style.background='#10b981';
+    });
+});
+</script>
+
+</body>
+</html>
